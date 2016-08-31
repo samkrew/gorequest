@@ -348,7 +348,6 @@ func (s *SuperAgent) queryStruct(content interface{}) *SuperAgent {
 			s.Errors = append(s.Errors, err)
 		} else {
 			for k, v := range val {
-				k = strings.ToLower(k)
 				s.QueryData.Add(k, v.(string))
 			}
 		}
