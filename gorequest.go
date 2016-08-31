@@ -332,6 +332,8 @@ func (s *SuperAgent) Query(content interface{}) *SuperAgent {
 		s.queryString(v.String())
 	case reflect.Struct:
 		s.queryStruct(v.Interface())
+	case reflect.Map:
+		s.queryStruct(v.Interface())
 	default:
 	}
 	return s
