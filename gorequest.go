@@ -333,13 +333,30 @@ func (s *SuperAgent) Query(content interface{}) *SuperAgent {
 	case reflect.Struct:
 		s.queryStruct(v.Interface())
 	case reflect.Map:
-		s.queryStruct(v.Interface())
+		s.queryMap(v.Interface())
 	default:
 	}
 	return s
 }
 
 func (s *SuperAgent) queryStruct(content interface{}) *SuperAgent {
+	if marshalContent, err := json.Marshal(content); err != nil {
+		s.Errors = append(s.Errors, err)
+	} else {
+		var val map[string]interface{}
+		if err := json.Unmarshal(marshalContent, &val); err != nil {
+			s.Errors = append(s.Errors, err)
+		} else {
+			for k, v := range val {
+				k = strings.ToLower(k)
+				s.QueryData.Add(k, v.(string))
+			}
+		}
+	}
+	return s
+}
+
+func (s *SuperAgent) queryMap(content interface{}) *SuperAgent {
 	if marshalContent, err := json.Marshal(content); err != nil {
 		s.Errors = append(s.Errors, err)
 	} else {
