@@ -365,7 +365,12 @@ func (s *SuperAgent) queryMap(content interface{}) *SuperAgent {
 			s.Errors = append(s.Errors, err)
 		} else {
 			for k, v := range val {
-				s.QueryData.Add(k, v.(string))
+				switch v.(type) {
+				case string:
+					s.QueryData.Add(k, v.(string))
+				default:
+					s.QueryData.Add(k, fmt.Sprint(v))
+				}
 			}
 		}
 	}
