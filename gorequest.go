@@ -1031,7 +1031,7 @@ func (s *SuperAgent) MakeRequest() (*http.Request, error) {
 				contentForm = []byte(s.RawString)
 			} else {
 				formData := changeMapToURLValues(s.Data)
-				contentForm = []byte(formData.Encode())
+				contentForm = []byte(strings.Replace(formData.Encode(), "+", "%20", -1))
 			}
 			contentReader := bytes.NewReader(contentForm)
 			req, err = http.NewRequest(s.Method, s.Url, contentReader)
@@ -1127,7 +1127,7 @@ func (s *SuperAgent) MakeRequest() (*http.Request, error) {
 			q.Add(k, vv)
 		}
 	}
-	req.URL.RawQuery = q.Encode()
+	req.URL.RawQuery = strings.Replace(q.Encode(), "+", "%20", -1)
 
 	// Add basic auth
 	if s.BasicAuth != struct{ Username, Password string }{} {
