@@ -66,6 +66,7 @@ type SuperAgent struct {
 	BasicAuth         struct{ Username, Password string }
 	Debug             bool
 	CurlCommand       bool
+	RFCSpace          bool
 	logger            *log.Logger
 }
 
@@ -1031,7 +1032,11 @@ func (s *SuperAgent) MakeRequest() (*http.Request, error) {
 				contentForm = []byte(s.RawString)
 			} else {
 				formData := changeMapToURLValues(s.Data)
-				contentForm = []byte(strings.Replace(formData.Encode(), "+", "%20", -1))
+				if s.RFCSpace {
+					contentForm = []byte(formData.Encode())
+				} else {
+					contentForm = []byte(strings.Replace(formData.Encode(), "+", "%20", -1))
+				}
 			}
 			contentReader := bytes.NewReader(contentForm)
 			req, err = http.NewRequest(s.Method, s.Url, contentReader)
